@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海龟交易策略实验室 — 界面设计原型 (Mockup)</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5/dist/echarts.min.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background:#f5f6f8; color:#2c3e50; font-size:13px; line-height:1.6;
+  }
+  .app { min-height:100vh; display:flex; flex-direction:column; }
+  /* Header */
+  header {
+    height:56px; background:#fff; border-bottom:1px solid #e8eaed;
+    display:flex; align-items:center; padding:0 24px; gap:24px;
+    position:sticky; top:0; z-index:10;
+  }
+  .logo { font-size:16px; font-weight:600; display:flex; align-items:center; gap:8px; white-space:nowrap; }
+  .logo .dot { width:28px; height:28px; border-radius:8px; background:#3498db; color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:15px; }
+  .tabs { display:flex; gap:4px; margin-left:auto; }
+  .tab {
+    padding:7px 16px; border-radius:8px; cursor:pointer; font-size:13px;
+    color:#7f8c8d; border:1px solid transparent; transition:.15s;
+  }
+  .tab:hover { background:#f0f2f5; }
+  .tab.active { background:#eaf4fb; color:#3498db; border-color:#d4e9f7; font-weight:500; }
+  .badge-mock { font-size:11px; color:#e67e22; background:#fef5e7; padding:3px 8px; border-radius:6px; }
+  /* Body */
+  .body { display:flex; flex:1; }
+  /* Sidebar */
+  aside {
+    width:260px; background:#fff; border-right:1px solid #e8eaed;
+    padding:20px 16px; flex-shrink:0; height:calc(100vh - 56px);
+    overflow-y:auto; position:sticky; top:56px;
+  }
+  .panel-title { font-size:12px; color:#95a5a6; font-weight:500; text-transform:uppercase;
+    letter-spacing:.5px; margin-bottom:10px; }
+  .stock-list { margin-bottom:24px; }
+  .stock-item {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 12px; border-radius:8px; cursor:pointer; margin-bottom:2px; transition:.15s;
+  }
+  .stock-item:hover { background:#f0f2f5; }
+  .stock-item.active { background:#eaf4fb; color:#3498db; }
+  .stock-item .name { font-weight:500; font-size:13px; }
+  .stock-item .code { font-size:11px; color:#bdc3c7; }
+  .stock-item.active .code { color:#7fbde8; }
+  .param { margin-bottom:16px; }
+  .param-label { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .param-label .lbl { font-size:12px; color:#7f8c8d; }
+  .param-label .val { font-size:13px; font-weight:600; color:#2c3e50; }
+  input[type=range] { width:100%; accent-color:#3498db; cursor:pointer; }
+  .btn-apply {
+    width:100%; padding:9px; margin-top:8px; border-radius:8px; border:none;
+    background:#3498db; color:#fff; font-size:13px; font-weight:500; cursor:pointer;
+  }
+  .btn-apply:hover { background:#2980b9; }
+  /* Main */
+  main { flex:1; padding:20px 24px; display:flex; flex-direction:column; gap:16px; min-width:0; }
+  .card { background:#fff; border:1px solid #e8eaed; border-radius:12px; padding:16px 20px; }
+  .card-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .card-title { font-size:14px; font-weight:600; }
+  .card-sub { font-size:12px; color:#95a5a6; }
+  .legend { display:flex; gap:14px; font-size:11px; color:#7f8c8d; flex-wrap:wrap; }
+  .legend span { display:flex; align-items:center; gap:4px; }
+  .legend i { width:14px; height:3px; border-radius:2px; display:inline-block; }
+  .legend .dot { width:9px; height:9px; border-radius:50%; }
+  #mainChart { width:100%; height:340px; }
+  #btChart { width:100%; height:240px; }
+  /* Metrics */
+  .metrics { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; }
+  .metric { background:#fff; border:1px solid #e8eaed; border-radius:10px; padding:14px; }
+  .metric .m-label { font-size:11px; color:#95a5a6; margin-bottom:6px; }
+  .metric .m-val { font-size:22px; font-weight:600; }
+  .metric .m-sub { font-size:11px; color:#bdc3c7; margin-top:2px; }
+  .pos { color:#e74c3c; } .neg { color:#27ae60; } .neutral { color:#2c3e50; }
+  /* Table */
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  thead th { background:#f0f2f5; padding:9px 12px; text-align:left; font-weight:500;
+    color:#7f8c8d; position:sticky; top:0; }
+  tbody td { padding:8px 12px; border-bottom:1px solid #f0f2f5; }
+  tbody tr:hover { background:#fafbfc; }
+  .tbl-wrap { max-height:220px; overflow-y:auto; }
+  .tag-buy { color:#e74c3c; font-weight:500; }
+  .tag-sell { color:#27ae60; font-weight:500; }
+  .tag { display:inline-block; padding:2px 7px; border-radius:5px; font-size:11px; }
+  .tag-b { background:#fdf0ef; color:#e74c3c; }
+  .tag-s { background:#eefaf3; color:#27ae60; }
+  .foot { text-align:center; color:#bdc3c7; font-size:11px; padding:8px 0 20px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo"><span class="dot">T</span> 海龟交易策略实验室</div>
+    <div class="tabs">
+      <div class="tab active">中芯国际</div>
+      <div class="tab">比亚迪</div>
+      <div class="tab">长江电力</div>
+      <div class="tab">兆威机电</div>
+    </div>
+    <div class="badge-mock">设计原型 · 非功能版</div>
+  </header>
+  <div class="body">
+    <aside>
+      <div class="panel-title">标的选择</div>
+      <div class="stock-list">
+        <div class="stock-item active"><span class="name">中芯国际</span><span class="code">sh688981</span></div>
+        <div class="stock-item"><span class="name">比亚迪</span><span class="code">sz002594</span></div>
+        <div class="stock-item"><span class="name">长江电力</span><span class="code">sh600900</span></div>
+        <div class="stock-item"><span class="name">兆威机电</span><span class="code">sz003021</span></div>
+      </div>
+      <div class="panel-title">策略参数</div>
+      <div class="param">
+        <div class="param-label"><span class="lbl">入场通道周期</span><span class="val">20</span></div>
+        <input type="range" min="5" max="55" value="20">
+      </div>
+      <div class="param">
+        <div class="param-label"><span class="lbl">出场通道周期</span><span class="val">10</span></div>
+        <input type="range" min="5" max="30" value="10">
+      </div>
+      <div class="param">
+        <div class="param-label"><span class="lbl">ATR 周期</span><span class="val">20</span></div>
+        <input type="range" min="5" max="60" value="20">
+      </div>
+      <div class="param">
+        <div class="param-label"><span class="lbl">止损倍数 (N)</span><span class="val">2</span></div>
+        <input type="range" min="1" max="4" step="0.5" value="2">
+      </div>
+      <div class="param">
+        <div class="param-label"><span class="lbl">初始资金 (元)</span><span class="val">100,000</span></div>
+        <input type="range" min="10000" max="1000000" step="10000" value="100000">
+      </div>
+      <div class="param">
+        <div class="param-label"><span class="lbl">手续费率</span><span class="val">0.03%</span></div>
+        <input type="range" min="0" max="0.001" step="0.0001" value="0.0003">
+      </div>
+      <button class="btn-apply">应用参数 · 重新计算</button>
+    </aside>
+    <main>
+      <!-- 策略主图 -->
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">中芯国际 (sh688981) — 策略主图</div>
+            <div class="card-sub">收盘价 · Donchian 通道 · ATR · 买卖信号</div>
+          </div>
+          <div class="legend">
+            <span><i style="background:#2c3e50"></i>收盘价</span>
+            <span><i style="background:#e74c3c;border-top:1px dashed #e74c3c"></i>上轨(20日高)</span>
+            <span><i style="background:#27ae60"></i>下轨(10日低)</span>
+            <span><i style="background:#f39c12"></i>ATR</span>
+            <span><span class="dot" style="background:#e74c3c"></span>买▲</span>
+            <span><span class="dot" style="background:#27ae60"></span>卖▼</span>
+          </div>
+        </div>
+        <div id="mainChart" role="img" aria-label="策略主图：收盘价与Donchian通道"></div>
+      </section>
+      <!-- 指标卡片 -->
+      <section class="metrics">
+        <div class="metric"><div class="m-label">累计回报</div><div class="m-val pos">+18.52%</div><div class="m-sub">基准 +9.31%</div></div>
+        <div class="metric"><div class="m-label">最大回撤</div><div class="m-val neg">-12.34%</div><div class="m-sub">基准 -15.07%</div></div>
+        <div class="metric"><div class="m-label">夏普比率</div><div class="m-val neutral">1.42</div><div class="m-sub">年化</div></div>
+        <div class="metric"><div class="m-label">胜率</div><div class="m-val neutral">55.0%</div><div class="m-sub">5/9 笔</div></div>
+        <div class="metric"><div class="m-label">交易次数</div><div class="m-val neutral">9</div><div class="m-sub">完整循环</div></div>
+        <div class="metric"><div class="m-label">年化收益</div><div class="m-val pos">+22.10%</div><div class="m-sub">超额 +12.8%</div></div>
+      </section>
+      <!-- 回测对比图 -->
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">回测对比 — 策略累计回报 vs 买入持有</div>
+            <div class="card-sub">初始资金 100,000 元 · 信号次日开盘执行</div>
+          </div>
+          <div class="legend">
+            <span><i style="background:#e74c3c"></i>策略回报</span>
+            <span><i style="background:#95a5a6"></i>买入持有基准</span>
+          </div>
+        </div>
+        <div id="btChart" role="img" aria-label="回测对比图"></div>
+      </section>
+      <!-- 交易记录 -->
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title">交易记录</div>
+          <div class="card-sub">共 9 笔完整交易 · 已扣除手续费</div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>#</th><th>日期</th><th>方向</th><th>价格</th><th>数量</th><th>金额</th><th>盈亏</th><th>类型</th>
+            </tr></thead>
+            <tbody id="tradeBody"></tbody>
+          </table>
+        </div>
+      </section>
+      <div class="foot">海龟交易策略实验室 · 界面设计原型 · 数据为模拟示意，非真实回测结果</div>
+    </main>
+  </div>
+</div>
+<script>
+// ---- 模拟数据生成（确定性，仅为原型展示）----
+(function(){
+  var N=80, seed=42;
+  function rand(){ seed=(seed*9301+49297)%233280; return seed/233280; }
+  function fmt(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  var data=[], close=98, d=new Date('2025-09-01');
+  while(data.length<N){
+    if(d.getDay()!==0 && d.getDay()!==6){
+      var open=close;
+      close=Math.max(60, close+(rand()-0.42)*4.5);
+      var high=Math.max(open,close)+rand()*2.5;
+      var low=Math.min(open,close)-rand()*2.5;
+      data.push({date:fmt(d),open:open,close:+close.toFixed(2),high:+high.toFixed(2),low:+low.toFixed(2)});
+    }
+    d.setDate(d.getDate()+1);
+  }
+  // Donchian 通道
+  var entryN=20, exitN=10, atrN=20;
+  for(var i=0;i<data.length;i++){
+    var s=Math.max(0,i-entryN+1), e=Math.max(0,i-exitN+1);
+    var up=-Infinity, lo=Infinity;
+    for(var j=s;j<=i;j++){ if(data[j].high>up)up=data[j].high; if(data[j].low<lo)lo=data[j].low; }
+    data[i].up=i>=entryN-1?up:null;
+    data[i].lo=i>=exitN-1?lo:null;
+    // TR
+    if(i===0){ data[i].tr=data[i].high-data[i].low; }
+    else{ var tr=Math.max(data[i].high-data[i].low, Math.abs(data[i].high-data[i-1].close), Math.abs(data[i].low-data[i-1].close)); data[i].tr=tr; }
+    // ATR SMA
+    if(i>=atrN-1){ var sum=0; for(var k=i-atrN+1;k<=i;k++)sum+=data[k].tr; data[i].atr=+(sum/atrN).toFixed(2);} else data[i].atr=null;
+  }
+  // 信号 + 回测
+  var pos=0, stop=NaN, trades=[], equity=100000, cash=100000, shares=0, entryP=0;
+  var eqArr=[], benchArr=[], startP=data[0].close;
+  var buyM=[], sellM=[];
+  for(var i=1;i<data.length;i++){
+    var sig=0, type='';
+    if(pos===0){
+      if(data[i-1].up!==null && data[i].close>data[i-1].up){
+        sig=1; pos=1;
+        shares=Math.floor(cash/data[i].open/100)*100;
+        cash-=shares*data[i].open*(1+0.0003);
+        entryP=data[i].open;
+        stop=entryP-2*(data[i-1].atr||0);
+        buyM.push([data[i].date, data[i].close]); type='突破买入';
+        trades.push({date:data[i].date,dir:'买',price:data[i].open,shares:shares,amt:shares*data[i].open});
+      }
+    } else {
+      var ns=data[i].close-2*(data[i-1].atr||0);
+      if(ns>stop) stop=ns;
+      if(data[i-1].lo!==null && data[i].close<data[i-1].lo){
+        sig=-1; type='通道卖出';
+      } else if(data[i].close<=stop){
+        sig=-1; type='止损卖出';
+      }
+      if(sig===-1){
+        cash+=shares*data[i].open*(1-0.0003);
+        var pnl=(data[i].open-entryP)*shares;
+        trades.push({date:data[i].date,dir:'卖',price:data[i].open,shares:shares,amt:shares*data[i].open,pnl:pnl,type:type});
+        sellM.push([data[i].date, data[i].close]);
+        pos=0; shares=0;
+      }
+    }
+    var mv=shares*data[i].close;
+    eqArr.push(+(cash+mv).toFixed(2));
+    benchArr.push(+(100000*data[i].close/startP).toFixed(2));
+  }
+  var dates=data.slice(1).map(function(x){return x.date;});
+  var closes=data.map(function(x){return x.close;});
+  var ups=data.map(function(x){return x.up;});
+  var los=data.map(function(x){return x.lo;});
+  var atrs=data.map(function(x){return x.atr;});
+
+  // 主图
+  var mc=echarts.init(document.getElementById('mainChart'));
+  mc.setOption({
+    tooltip:{trigger:'axis', axisPointer:{type:'cross'}},
+    legend:{show:false},
+    grid:{left:55,right:60,top:10,bottom:50},
+    xAxis:{type:'category', data:data.map(function(x){return x.date;}),
+      axisLabel:{fontSize:10,color:'#bdc3c7'}},
+    yAxis:[
+      {type:'value', scale:true, name:'价格', nameTextStyle:{color:'#95a5a6',fontSize:10},
+       axisLabel:{fontSize:10,color:'#bdc3c7'}, splitLine:{lineStyle:{color:'#f0f2f5'}}},
+      {type:'value', scale:true, name:'ATR', nameTextStyle:{color:'#f39c12',fontSize:10},
+       axisLabel:{fontSize:10,color:'#f39c12'}, splitLine:{show:false}}
+    ],
+    dataZoom:[{type:'inside',start:30,end:100},{type:'slider',start:30,end:100,height:18,bottom:8}],
+    series:[
+      {name:'收盘价', type:'line', data:closes, smooth:true, symbol:'none',
+       lineStyle:{color:'#2c3e50',width:1.5}},
+      {name:'上轨', type:'line', data:ups, symbol:'none', connectNulls:false,
+       lineStyle:{color:'#e74c3c',width:1,type:'dashed'}},
+      {name:'下轨', type:'line', data:los, symbol:'none', connectNulls:false,
+       lineStyle:{color:'#27ae60',width:1,type:'dashed'}},
+      {name:'ATR', type:'line', yAxisIndex:1, data:atrs, symbol:'none',
+       lineStyle:{color:'#f39c12',width:1.2,opacity:.7}},
+      {name:'买入', type:'scatter', data:buyM, symbol:'triangle', symbolSize:12,
+       itemStyle:{color:'#e74c3c'}, label:{show:true,formatter:'买',position:'bottom',fontSize:10,color:'#e74c3c'}},
+      {name:'卖出', type:'scatter', data:sellM, symbol:'triangle', symbolSize:12,
+       symbolRotate:180, itemStyle:{color:'#27ae60'}, label:{show:true,formatter:'卖',position:'top',fontSize:10,color:'#27ae60'}}
+    ]
+  });
+  // 回测图
+  var bc=echarts.init(document.getElementById('btChart'));
+  var eqPct=eqArr.map(function(v){return +((v/100000-1)*100).toFixed(2);});
+  var bpPct=benchArr.map(function(v){return +((v/100000-1)*100).toFixed(2);});
+  bc.setOption({
+    tooltip:{trigger:'axis', valueFormatter:function(v){return v+'%';}},
+    legend:{show:false},
+    grid:{left:55,right:20,top:10,bottom:30},
+    xAxis:{type:'category', data:dates, axisLabel:{fontSize:10,color:'#bdc3c7'}},
+    yAxis:{type:'value', name:'累计回报(%)', nameTextStyle:{color:'#95a5a6',fontSize:10},
+      axisLabel:{fontSize:10,color:'#bdc3c7',formatter:'{value}%'}, splitLine:{lineStyle:{color:'#f0f2f5'}}},
+    series:[
+      {name:'策略回报', type:'line', data:eqPct, smooth:true, symbol:'none',
+       lineStyle:{color:'#e74c3c',width:2}, areaStyle:{color:'rgba(231,76,60,.08)'}},
+      {name:'买入持有', type:'line', data:bpPct, symbol:'none',
+       lineStyle:{color:'#95a5a6',width:1.5,type:'dashed'}}
+    ]
+  });
+  // 交易表
+  var tb=document.getElementById('tradeBody'), html='';
+  trades.forEach(function(t,i){
+    var cls=t.dir==='买'?'tag-b':'tag-s';
+    var pnlHtml = t.pnl!==undefined ? (t.pnl>=0?'<span class="pos">+'+(t.pnl/100).toFixed(2)+'%</span>':'<span class="neg">'+(t.pnl/100).toFixed(2)+'%</span>') : '—';
+    html+='<tr><td>'+(i+1)+'</td><td>'+t.date+'</td><td><span class="tag '+cls+'">'+t.dir+'</span></td><td>'+t.price.toFixed(2)+'</td><td>'+t.shares+'</td><td>'+(t.amt/10000).toFixed(2)+'万</td><td>'+pnlHtml+'</td><td>'+(t.type||'—')+'</td></tr>';
+  });
+  tb.innerHTML=html;
+  window.addEventListener('resize',function(){mc.resize();bc.resize();});
+})();
+</script>
+</body>
+</html>
