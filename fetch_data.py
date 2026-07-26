@@ -6,12 +6,19 @@
 使用 westock-data CLI 获取 A 股日线数据（前复权），保存为 JSON。
 JSON 字段: date, open, close, high, low, volume, amount
 
-股票列表（A 股）:
-  - 中芯国际 (sh688981)   —— 来自前期任务
-  - 比亚迪   (sz002594)   —— 来自前期任务
-  - 长江电力 (sh600900)   —— 来自前期任务
-  - 兆威机电 (sz003021)   —— 本次新增
-  - 智谱替代 (待定)        —— 由用户确认后填入 STOCKS 列表
+股票列表（A 股，12 支）:
+  - 中芯国际 (sh688981)   半导体
+  - 比亚迪   (sz002594)   新能源汽车
+  - 长江电力 (sh600900)   电力
+  - 兆威机电 (sz003021)   精密制造
+  - 蓝思科技 (sz300433)   电子制造
+  - 中际旭创 (sz300308)   通信设备
+  - 上海环境 (sh601200)   环保
+  - 城投控股 (sh600649)   房地产
+  - 国金证券 (sh600109)   证券
+  - 北京银行 (sh601169)   银行
+  - 雅戈尔   (sh600177)   纺织服装
+  - 上海电力 (sh600021)   电力
 
 用法:
   python fetch_data.py
@@ -26,8 +33,8 @@ from pathlib import Path
 NODE = "/Users/zhangxiao/.workbuddy/binaries/node/versions/22.22.2/bin/node"
 SCRIPT = "/Applications/WorkBuddy.app/Contents/Resources/app.asar.unpacked/resources/builtin-skills/westock-data/scripts/index.js"
 
-# 取约 1 年交易日，足够支撑海龟 20 日通道 + ATR(20) 计算
-LIMIT = 260
+# 取约 2 年交易日，足够支撑海龟 20 日通道 + ATR(20) 计算
+LIMIT = 480
 
 # 数据目录（与脚本同级的 data/）
 DATA_DIR = Path(__file__).parent / "data"
@@ -42,7 +49,14 @@ STOCKS = [
     ("sz002594", "比亚迪",   "新能源汽车"),
     ("sh600900", "长江电力", "电力"),
     ("sz003021", "兆威机电", "精密制造"),
-    # ("shXXXXXX", "智谱替代", "AI"),   # TODO: 用户确认后取消注释并填入
+    ("sz300433", "蓝思科技", "电子制造"),
+    ("sz300308", "中际旭创", "通信设备"),
+    ("sh601200", "上海环境", "环保"),
+    ("sh600649", "城投控股", "房地产"),
+    ("sh600109", "国金证券", "证券"),
+    ("sh601169", "北京银行", "银行"),
+    ("sh600177", "雅戈尔",   "纺织服装"),
+    ("sh600021", "上海电力", "电力"),
 ]
 
 
