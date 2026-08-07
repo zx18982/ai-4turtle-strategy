@@ -3,13 +3,13 @@
     "code": "sh688981",
     "name": "中芯国际",
     "industry": "半导体",
-    "count": 0
+    "count": 480
   },
   {
     "code": "sz002594",
     "name": "比亚迪",
     "industry": "新能源汽车",
-    "count": 0
+    "count": 480
   },
   {
     "code": "sh600900",
@@ -21,7 +21,7 @@
     "code": "sz003021",
     "name": "兆威机电",
     "industry": "精密制造",
-    "count": 0
+    "count": 480
   },
   {
     "code": "sz300433",
@@ -69,6 +69,6 @@
     "code": "sh600021",
     "name": "上海电力",
     "industry": "电力",
-    "count": 0
+    "count": 480
   }
 ]
