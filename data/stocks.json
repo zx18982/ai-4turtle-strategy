@@ -39,13 +39,13 @@
     "code": "sh601200",
     "name": "上海环境",
     "industry": "环保",
-    "count": 480
+    "count": 0
   },
   {
     "code": "sh600649",
     "name": "城投控股",
     "industry": "房地产",
-    "count": 480
+    "count": 0
   },
   {
     "code": "sh600109",
@@ -69,6 +69,6 @@
     "code": "sh600021",
     "name": "上海电力",
     "industry": "电力",
-    "count": 480
+    "count": 0
   }
 ]
