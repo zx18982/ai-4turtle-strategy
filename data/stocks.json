@@ -3,37 +3,37 @@
     "code": "sh688981",
     "name": "中芯国际",
     "industry": "半导体",
-    "count": 480
+    "count": 0
   },
   {
     "code": "sz002594",
     "name": "比亚迪",
     "industry": "新能源汽车",
-    "count": 480
+    "count": 0
   },
   {
     "code": "sh600900",
     "name": "长江电力",
     "industry": "电力",
-    "count": 480
+    "count": 0
   },
   {
     "code": "sz003021",
     "name": "兆威机电",
     "industry": "精密制造",
-    "count": 480
+    "count": 0
   },
   {
     "code": "sz300433",
     "name": "蓝思科技",
     "industry": "电子制造",
-    "count": 480
+    "count": 0
   },
   {
     "code": "sz300308",
     "name": "中际旭创",
     "industry": "通信设备",
-    "count": 480
+    "count": 0
   },
   {
     "code": "sh601200",
@@ -57,7 +57,7 @@
     "code": "sh601169",
     "name": "北京银行",
     "industry": "银行",
-    "count": 480
+    "count": 0
   },
   {
     "code": "sh600177",
@@ -69,6 +69,6 @@
     "code": "sh600021",
     "name": "上海电力",
     "industry": "电力",
-    "count": 480
+    "count": 0
   }
 ]
