@@ -9,13 +9,13 @@
     "code": "sz002594",
     "name": "比亚迪",
     "industry": "新能源汽车",
-    "count": 480
+    "count": 0
   },
   {
     "code": "sh600900",
     "name": "长江电力",
     "industry": "电力",
-    "count": 480
+    "count": 0
   },
   {
     "code": "sz003021",
@@ -69,6 +69,6 @@
     "code": "sh600021",
     "name": "上海电力",
     "industry": "电力",
-    "count": 480
+    "count": 0
   }
 ]
